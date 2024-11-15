@@ -90,44 +90,31 @@
   </div>
 
   <div class="navbar">
-    <a href="#" id="home-page">Головна сторінка</a>
-    <a href="#" id="instagram-link" target="_blank">Instagram</a>
-    <a href="#" id="instruction-link">Інструкція</a>
+    <a href="#" id="homeLink">Головна</a>
+    <a href="#" id="instaLink">Instagram</a>
+    <a href="#" id="instructionLink">Інструкція</a>
   </div>
 
-  <!-- Продукты -->
-  <div class="products">
-    <div class="product">
-      <img src="Konfeta1.png" alt="Konfeta1">
-      <h3>Konfeta1</h3>
-      <p>Ціна: 40 грн</p>
-      <button onclick="addToCart('Konfeta1', 40)">Додати в кошик</button>
-    </div>
+  <div class="product">
+    <img src="Konfeta1.png" alt="Konfeta1">
+    <h3>Konfeta1</h3>
+    <p>Ціна: 40 грн</p>
+    <button id="addToCartBtn">Додати в кошик</button>
   </div>
 
-  <!-- Кошик -->
+  <!-- Корзина -->
   <div id="cart" class="cart">
-    <h3>Ваш кошик</h3>
+    <h3>Ваша корзина (ID: <span id="userID"></span>)</h3>
     <div id="cart-container"></div>
-    <p id="total-price">Ітого: 0 грн</p>
-    <button onclick="handlePurchase()">Купити</button>
-    <button onclick="toggleCart()">Закрити</button>
+    <div id="total-price">Загальна сума: 0 грн</div>
+    <button id="checkoutBtn">Купити</button>
+    <button id="closeCartBtn">Закрити корзину</button>
   </div>
 
-  <!-- Інструкція -->
-  <div id="instruction" class="instruction" style="display: none;">
-    <h2>Інструкція</h2>
-    <p>Здрастуйте, шановний покупець! ви знаходитесь на вкладці за інструкцією як купити наші товари, ну що ж, давайте почнемо:</p>
-    <p>Спочатку ви повинні вибрати товари, які ви хочете купити, і додаєте їх в кошик, пізніше ви заходите в кошик і натискаєте на "Купити", вас перекидає на гугл форму де ви зможете заповнити всі необхідні дані, співробітники зв'яжуться з вами і вам потрібно буде перейти в телеграм або вайбер, де ви скидаєте скрін вашого кошика (що б ми розуміли скільки у вас товарів і скільки вони всього коштують) після цього ми відправляємо вам товар і ви їсте смачненьке какао з льодяниками.</p>
-    <button onclick="goBackToHome()">Назад до головної сторінки</button>
-  </div>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-auth.js"></script>
-
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
   <script>
+    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyCbwL9HghjIcRi06sgIZ6uo0zis0f0F7Lw",
       authDomain: "provocator-bomb.firebaseapp.com",
@@ -138,98 +125,96 @@
       measurementId: "G-10N6MXVTQ5"
     };
 
+    // Initialize Firebase
     const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+    const db = firebase.firestore(app);
 
-    let userId = localStorage.getItem("userId");
+    // Получаем корзину и кнопки
+    const cartElement = document.getElementById("cart");
+    const addToCartBtn = document.getElementById("addToCartBtn");
+    const closeCartBtn = document.getElementById("closeCartBtn");
+    const userIDElement = document.getElementById("userID");
+    const cartContainer = document.getElementById("cart-container");
+    const totalPriceElement = document.getElementById("total-price");
+    const checkoutBtn = document.getElementById("checkoutBtn");
 
-    if (!userId) {
-      userId = "user_" + new Date().getTime();
-      localStorage.setItem("userId", userId);
+    let cart = [];
+    let userID = null;
+
+    // Генерация уникального ID пользователя при первой загрузке
+    function generateUserID() {
+      userID = 'user_' + Math.random().toString(36).substr(2, 9);
+      userIDElement.innerText = userID;
+      return userID;
     }
 
-    // Функция добавления товара в корзину
-    function addToCart(productName, productPrice) {
-      const cartItem = {
-        userId: userId,
-        name: productName,
-        price: productPrice,
-        timestamp: new Date().toISOString(),
-      };
-
-      db.collection("orders").add(cartItem)
-        .then(() => {
-          alert("Товар добавлен в корзину!");
-          updateCart();
-        })
-        .catch((error) => {
-          console.error("Ошибка при добавлении товара:", error);
+    // Сохранение данных корзины в Firestore
+    function saveCartToFirestore() {
+      if (userID) {
+        db.collection("carts").doc(userID).set({
+          items: cart,
         });
-    }
-
-    // Получение заказов пользователя из Firestore
-    function getCart() {
-      db.collection("orders")
-        .where("userId", "==", userId)
-        .onSnapshot((snapshot) => {
-          let cartItems = [];
-          snapshot.forEach((doc) => {
-            cartItems.push(doc.data());
-          });
-
-          displayCart(cartItems);
-        });
-    }
-
-    // Отображение корзины
-    function displayCart(cartItems) {
-      const cartContainer = document.getElementById("cart-container");
-      cartContainer.innerHTML = '';
-
-      cartItems.forEach(item => {
-        const itemElement = document.createElement("div");
-        itemElement.classList.add("cart-item");
-        itemElement.innerHTML = `
-          <p>Товар: ${item.name}</p>
-          <p>Цена: ${item.price} грн</p>
-        `;
-        cartContainer.appendChild(itemElement);
-      });
-
-      const total = cartItems.reduce((sum, item) => sum + item.price, 0);
-      document.getElementById("total-price").innerText = `Итого: ${total} грн`;
-    }
-
-    // Переключение видимости корзины
-    function toggleCart() {
-      const cart = document.getElementById("cart");
-      cart.classList.toggle("open");
-      if (cart.classList.contains("open")) {
-        getCart();
       }
     }
 
-    // Переход к Google Forms
-    function handlePurchase() {
-      getCart();
+    // Открытие корзины
+    function openCart() {
+      cartElement.classList.add("open");
+      displayCart();
+    }
+
+    // Закрытие корзины
+    function closeCart() {
+      cartElement.classList.remove("open");
+    }
+
+    // Добавление товара в корзину
+    addToCartBtn.addEventListener("click", function() {
+      const product = {
+        name: "Konfeta1",
+        price: 40,
+      };
+      cart.push(product);
+      saveCartToFirestore();
+      openCart();
+    });
+
+    // Отображение товаров в корзине
+    function displayCart() {
+      cartContainer.innerHTML = "";
+      let totalPrice = 0;
+
+      cart.forEach(item => {
+        const cartItem = document.createElement("div");
+        cartItem.classList.add("cart-item");
+        cartItem.innerHTML = `${item.name} - ${item.price} грн`;
+        cartContainer.appendChild(cartItem);
+        totalPrice += item.price;
+      });
+
+      totalPriceElement.innerText = `Загальна сума: ${totalPrice} грн`;
+    }
+
+    // Обработка закрытия корзины
+    closeCartBtn.addEventListener("click", closeCart);
+
+    // Обработка кнопки "Купити"
+    checkoutBtn.addEventListener("click", function() {
       window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdXo5bqVltvFc3k9VoE6PBckYGovq2TPTxKQhIB7JCCyQiukg/viewform";
-    }
+    });
 
-    // Переход назад на главную
-    function goBackToHome() {
-      document.getElementById("instruction").style.display = "none";
-      document.getElementById("home-page").style.display = "block";
-    }
-
-    // Открытие инструкции
-    document.getElementById("instruction-link").onclick = function() {
-      document.getElementById("instruction").style.display = "block";
-      document.getElementById("home-page").style.display = "none";
-    }
-
-    // Скрытие корзины при закрытии
-    document.getElementById("cart").style.display = "none";
+    // Инициализация корзины и уникального ID при загрузке страницы
+    window.onload = function() {
+      if (!userID) {
+        generateUserID();
+      }
+      db.collection("carts").doc(userID).get().then((doc) => {
+        if (doc.exists) {
+          cart = doc.data().items || [];
+          displayCart();
+        }
+      });
+    };
   </script>
 
 </body>
