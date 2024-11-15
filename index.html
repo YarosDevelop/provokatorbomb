@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Магазин сладостей</title>
+    <title>Магазин солодощів</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -147,30 +147,46 @@
             font-size: 14px;
             color: #888;
         }
+
+        .close-cart {
+            background-color: #ff6f61;
+            color: white;
+            font-size: 18px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .close-cart:hover {
+            background-color: #e25a4d;
+        }
     </style>
 </head>
 <body>
     <div class="top-bar">
-        <div><a href="https://provokatorbomb.vercel.app" class="social-button">Главная страница</a></div>
+        <div><a href="https://provokatorbomb.vercel.app" class="social-button">Головна сторінка</a></div>
         <div><a href="https://instagram.com" class="social-button">Instagram</a></div>
     </div>
 
     <div class="container">
         <img src="Konfeta1.png" alt="Konfeta1" class="product-image">
         <h1 class="product-title">Konfeta1</h1>
-        <p class="product-price">Цена: 40 грн</p>
-        <button class="add-to-cart" onclick="addToCart('Konfeta1', 40)">Добавить в корзину</button>
+        <p class="product-price">Ціна: 40 грн</p>
+        <button class="add-to-cart" onclick="addToCart('Konfeta1', 40)">Додати в кошик</button>
     </div>
 
-    <button class="cart-button" onclick="toggleCart()">Корзина</button>
+    <button class="cart-button" onclick="toggleCart()">Кошик</button>
 
     <div class="cart-container" id="cart-container">
-        <h3>Ваша корзина</h3>
+        <button class="close-cart" onclick="toggleCart()">Закрити кошик</button>
+        <h3>Ваш кошик</h3>
         <div id="cart-items"></div>
     </div>
 
     <div class="footer">
-        <p>© 2024 Магазин сладостей</p>
+        <p>© 2024 Магазин солодощів</p>
     </div>
 
     <script>
@@ -191,7 +207,7 @@
                 cartItem.classList.add('cart-item');
                 cartItem.innerHTML = `
                     <h4>${product.name}</h4>
-                    <button class="buy-button" onclick="window.location.href='https://forms.gle/example'">Купить</button>
+                    <button class="buy-button" onclick="window.location.href='https://docs.google.com/forms/d/e/1FAIpQLSdXo5bqVltvFc3k9VoE6PBckYGovq2TPTxKQhIB7JCCyQiukg/viewform'">Купити</button>
                 `;
                 cartItemsContainer.appendChild(cartItem);
             });
