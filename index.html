@@ -162,6 +162,13 @@
         .close-cart:hover {
             background-color: #e25a4d;
         }
+
+        .total-price {
+            font-size: 18px;
+            color: #333;
+            margin-top: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -183,6 +190,7 @@
         <button class="close-cart" onclick="toggleCart()">Закрити кошик</button>
         <h3>Ваш кошик</h3>
         <div id="cart-items"></div>
+        <p class="total-price" id="total-price">Загальна вартість: 0 грн</p>
     </div>
 
     <div class="footer">
@@ -202,6 +210,7 @@
             const cartItemsContainer = document.getElementById('cart-items');
             cartItemsContainer.innerHTML = '';
 
+            let total = 0;
             cart.forEach(product => {
                 const cartItem = document.createElement('div');
                 cartItem.classList.add('cart-item');
@@ -210,7 +219,11 @@
                     <button class="buy-button" onclick="window.location.href='https://docs.google.com/forms/d/e/1FAIpQLSdXo5bqVltvFc3k9VoE6PBckYGovq2TPTxKQhIB7JCCyQiukg/viewform'">Купити</button>
                 `;
                 cartItemsContainer.appendChild(cartItem);
+                total += product.price;
             });
+
+            const totalPrice = document.getElementById('total-price');
+            totalPrice.innerHTML = `Загальна вартість: ${total} грн`;
         }
 
         function toggleCart() {
