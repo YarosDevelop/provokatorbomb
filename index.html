@@ -208,13 +208,6 @@
             font-size: 16px;
             color: #333;
         }
-
-        .order-item {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
     </style>
 </head>
 <body>
@@ -238,7 +231,6 @@
         <h3>Ваш кошик</h3>
         <div id="cart-items"></div>
         <p class="total-price" id="total-price">Загальна вартість: 0 грн</p>
-        <button class="buy-button" onclick="buyProduct()">Оформити замовлення</button>
     </div>
 
     <div id="instruction" class="tab-content">
@@ -254,25 +246,7 @@
         <p>© 2024 Магазин солодощів</p>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
-
     <script>
-        // Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyCbwL9HghjIcRi06sgIZ6uo0zis0f0F7Lw",
-            authDomain: "provocator-bomb.firebaseapp.com",
-            projectId: "provocator-bomb",
-            storageBucket: "provocator-bomb.appspot.com",
-            messagingSenderId: "202849503814",
-            appId: "1:202849503814:web:67adfdc5d4f11ba31b5847",
-            measurementId: "G-10N6MXVTQ5"
-        };
-
-        // Ініціалізація Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore(app);
-
         let cart = [];
 
         function addToCart(productName, price) {
@@ -291,7 +265,7 @@
                 cartItem.classList.add('cart-item');
                 cartItem.innerHTML = `
                     <h4>${product.name}</h4>
-                    <button class="buy-button" onclick="buyProduct()">Купити</button>
+                    <button class="buy-button" onclick="window.location.href='https://docs.google.com/forms/d/e/1FAIpQLSdXo5bqVltvFc3k9VoE6PBckYGovq2TPTxKQhIB7JCCyQiukg/viewform'">Купити</button>
                 `;
                 cartItemsContainer.appendChild(cartItem);
                 total += product.price;
@@ -300,76 +274,25 @@
             document.getElementById('total-price').innerHTML = `Загальна вартість: ${total} грн`;
         }
 
-        // Функція для покупки
-        function buyProduct() {
-            addOrderToFirebase(cart);
-            cart = [];  // Очистити кошик після оформлення
-            updateCart();  // Оновити відображення кошика
-        }
-
-        // Збереження замовлення у Firebase
-        function addOrderToFirebase(cart) {
-            const orderId = db.collection('orders').doc().id; // Генеруємо унікальний ID для замовлення
-            const orderData = {
-                orderId: orderId,
-                items: cart.map(item => ({
-                    name: item.name,
-                    price: item.price
-                })),
-                totalPrice: cart.reduce((sum, item) => sum + item.price, 0),
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            // Збереження даних замовлення у Firebase
-            db.collection('orders').doc(orderId).set(orderData)
-                .then(() => {
-                    console.log("Order saved with ID: " + orderId);
-                    alert('Ваше замовлення було успішно оформлене! ID замовлення: ' + orderId);
-                    displayOrders(); // Оновлюємо відображення замовлень
-                })
-                .catch((error) => {
-                    console.error("Error adding document: ", error);
-                });
-        }
-
-        // Виведення замовлень на сторінку
-        function displayOrders() {
-            const ordersContainer = document.getElementById('orders-container');
-            db.collection('orders').get()
-                .then(snapshot => {
-                    ordersContainer.innerHTML = '';
-                    snapshot.forEach(doc => {
-                        const order = doc.data();
-                        const orderElement = document.createElement('div');
-                        orderElement.classList.add('order-item');
-                        orderElement.innerHTML = `
-                            <h4>Замовлення ID: ${order.orderId}</h4>
-                            <p>Товари:</p>
-                            <ul>
-                                ${order.items.map(item => `<li>${item.name} - ${item.price} грн</li>`).join('')}
-                            </ul>
-                            <p>Загальна вартість: ${order.totalPrice} грн</p>
-                        `;
-                        ordersContainer.appendChild(orderElement);
-                    });
-                })
-                .catch(error => {
-                    console.error("Error getting orders: ", error);
-                });
-        }
-
         function toggleCart() {
             const cartContainer = document.getElementById('cart-container');
             cartContainer.style.display = cartContainer.style.display === 'block' ? 'none' : 'block';
         }
 
-        function showTab(tabName) {
-            const allTabs = document.querySelectorAll('.tab-content');
-            allTabs.forEach(tab => tab.classList.remove('active'));
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
 
-            const activeTab = document.getElementById(tabName);
-            activeTab.classList.add('active');
+            if (tabId === 'main') {
+                document.getElementById('main-container').style.display = 'block';
+            } else {
+                document.getElementById('main-container').style.display = 'none';
+            }
+
+            document.getElementById(tabId).classList.add('active');
         }
+
+        showTab('main');
     </script>
 </body>
 </html>
