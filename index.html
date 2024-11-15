@@ -169,6 +169,45 @@
             margin-top: 20px;
             font-weight: bold;
         }
+
+        /* Стиль для вкладок */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background-color: #ff6f61;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 5px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .tab:hover {
+            background-color: #e25a4d;
+        }
+
+        .tab-content {
+            display: none;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .instruction-text {
+            font-size: 16px;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -191,6 +230,18 @@
         <h3>Ваш кошик</h3>
         <div id="cart-items"></div>
         <p class="total-price" id="total-price">Загальна вартість: 0 грн</p>
+    </div>
+
+    <div class="tabs">
+        <div class="tab" onclick="showTab('instruction')">Інструкція</div>
+    </div>
+
+    <div id="instruction" class="tab-content">
+        <p class="instruction-text">
+            Здрастуйте, шановний покупець! Ви знаходитеся на вкладці з інструкцією як купити наші товари. Ну що ж, давайте почнемо:
+            <br><br>
+            Спочатку ви повинні вибрати товари, які ви хочете купити, і додаєте їх в кошик. Пізніше ви заходите в кошик і натискаєте на "Купити". Вас перекидає на гугл форму, де ви зможете заповнити всі необхідні дані. Співробітники зв'яжуться з вами, і вам потрібно буде перейти в Telegram або Viber, де ви скидаєте скрін вашого кошика (щоб ми розуміли скільки у вас товарів і скільки вони всього коштують). Після цього ми відправляємо вам товар, і ви їсте смачненьке какао з льодяниками.
+        </p>
     </div>
 
     <div class="footer">
@@ -229,6 +280,12 @@
         function toggleCart() {
             const cartContainer = document.getElementById('cart-container');
             cartContainer.style.display = cartContainer.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
         }
     </script>
 </body>
