@@ -1,221 +1,375 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Магазин Provokator Bomb</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-    .header {
-      background-color: #333;
-      color: white;
-      padding: 10px 20px;
-      text-align: center;
-    }
-    .navbar {
-      display: flex;
-      justify-content: space-around;
-      background-color: #444;
-      padding: 10px;
-    }
-    .navbar a {
-      color: white;
-      text-decoration: none;
-      padding: 10px 20px;
-      background-color: #555;
-      border-radius: 5px;
-    }
-    .navbar a:hover {
-      background-color: #666;
-    }
-    .cart {
-      position: fixed;
-      top: 10%;
-      right: 10px;
-      background-color: #fff;
-      padding: 15px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      display: none;
-    }
-    .cart.open {
-      display: block;
-    }
-    .cart-item {
-      margin: 10px 0;
-    }
-    #total-price {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    #cart-container {
-      max-height: 300px;
-      overflow-y: scroll;
-    }
-    .product {
-      display: inline-block;
-      width: 200px;
-      margin: 20px;
-      padding: 15px;
-      background-color: #f4f4f4;
-      border-radius: 5px;
-      text-align: center;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    }
-    .product img {
-      width: 100%;
-      height: auto;
-      border-radius: 5px;
-    }
-    .product button {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    .product button:hover {
-      background-color: #218838;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магазин солодощів</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        /* Лента сверху */
+        .top-bar {
+            background-color: #ff6f61;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 50px auto 0;
+        }
+
+        .product-image {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        .product-title {
+            font-size: 24px;
+            color: #333;
+            margin: 20px 0 10px;
+        }
+
+        .product-price {
+            font-size: 20px;
+            color: #ff6f61;
+            margin: 10px 0;
+        }
+
+        .add-to-cart {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background-color: #45a049;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .social-button {
+            padding: 10px 20px;
+            background-color: #3f729b;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .social-button:hover {
+            background-color: #355d74;
+        }
+
+        .cart-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #ff6f61;
+            color: white;
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
+        .cart-button:hover {
+            background-color: #e25a4d;
+        }
+
+        .cart-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cart-item h4 {
+            margin: 0;
+        }
+
+        .buy-button {
+            background-color: #4caf50;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .buy-button:hover {
+            background-color: #45a049;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .close-cart {
+            background-color: #ff6f61;
+            color: white;
+            font-size: 18px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .close-cart:hover {
+            background-color: #e25a4d;
+        }
+
+        .total-price {
+            font-size: 18px;
+            color: #333;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        /* Стиль для вкладок */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background-color: #ff6f61;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 5px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .tab:hover {
+            background-color: #e25a4d;
+        }
+
+        .tab-content {
+            display: none;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .instruction-text {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .order-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
+    <div class="top-bar">
+        <div><a href="https://provokatorbomb.vercel.app" class="social-button">Головна сторінка</a></div>
+        <div><a href="https://instagram.com" class="social-button">Instagram</a></div>
+        <div class="tab" onclick="showTab('instruction')">Інструкція</div>
+    </div>
 
-  <div class="header">
-    <h1>Магазин Provokator Bomb</h1>
-  </div>
+    <div class="container" id="main-container">
+        <img src="Konfeta1.png" alt="Konfeta1" class="product-image">
+        <h1 class="product-title">Konfeta1</h1>
+        <p class="product-price">Ціна: 40 грн</p>
+        <button class="add-to-cart" onclick="addToCart('Konfeta1', 40)">Додати в кошик</button>
+    </div>
 
-  <div class="navbar">
-    <a href="#" id="homeLink">Головна</a>
-    <a href="#" id="instaLink">Instagram</a>
-    <a href="#" id="instructionLink">Інструкція</a>
-  </div>
+    <button class="cart-button" onclick="toggleCart()">Кошик</button>
 
-  <div class="product">
-    <img src="Konfeta1.png" alt="Konfeta1">
-    <h3>Konfeta1</h3>
-    <p>Ціна: 40 грн</p>
-    <button id="addToCartBtn">Додати в кошик</button>
-  </div>
+    <div class="cart-container" id="cart-container">
+        <button class="close-cart" onclick="toggleCart()">Закрити кошик</button>
+        <h3>Ваш кошик</h3>
+        <div id="cart-items"></div>
+        <p class="total-price" id="total-price">Загальна вартість: 0 грн</p>
+        <button class="buy-button" onclick="buyProduct()">Оформити замовлення</button>
+    </div>
 
-  <!-- Корзина -->
-  <div id="cart" class="cart">
-    <h3>Ваша корзина (ID: <span id="userID"></span>)</h3>
-    <div id="cart-container"></div>
-    <div id="total-price">Загальна сума: 0 грн</div>
-    <button id="checkoutBtn">Купити</button>
-    <button id="closeCartBtn">Закрити корзину</button>
-  </div>
+    <div id="instruction" class="tab-content">
+        <p class="instruction-text">
+            Здрастуйте, шановний покупець! Ви знаходитеся на вкладці з інструкцією як купити наші товари. Ну що ж, давайте почнемо:
+            <br><br>
+            Спочатку ви повинні вибрати товари, які ви хочете купити, і додаєте їх в кошик. Пізніше ви заходите в кошик і натискаєте на "Купити". Вас перекидає на гугл форму, де ви зможете заповнити всі необхідні дані. Співробітники зв'яжуться з вами, і вам потрібно буде перейти в Telegram або Viber, де ви скидаєте скрін вашого кошика (щоб ми розуміли скільки у вас товарів і скільки вони всього коштують). Після цього ми відправляємо вам товар, і ви їсте смачненьке какао з льодяниками.
+        </p>
+        <button class="tab" onclick="showTab('main')">Повернутись до товарів</button>
+    </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
-  <script>
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyCbwL9HghjIcRi06sgIZ6uo0zis0f0F7Lw",
-      authDomain: "provocator-bomb.firebaseapp.com",
-      projectId: "provocator-bomb",
-      storageBucket: "provocator-bomb.firebasestorage.app",
-      messagingSenderId: "202849503814",
-      appId: "1:202849503814:web:67adfdc5d4f11ba31b5847",
-      measurementId: "G-10N6MXVTQ5"
-    };
+    <div class="footer">
+        <p>© 2024 Магазин солодощів</p>
+    </div>
 
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore(app);
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
 
-    // Получаем корзину и кнопки
-    const cartElement = document.getElementById("cart");
-    const addToCartBtn = document.getElementById("addToCartBtn");
-    const closeCartBtn = document.getElementById("closeCartBtn");
-    const userIDElement = document.getElementById("userID");
-    const cartContainer = document.getElementById("cart-container");
-    const totalPriceElement = document.getElementById("total-price");
-    const checkoutBtn = document.getElementById("checkoutBtn");
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCbwL9HghjIcRi06sgIZ6uo0zis0f0F7Lw",
+            authDomain: "provocator-bomb.firebaseapp.com",
+            projectId: "provocator-bomb",
+            storageBucket: "provocator-bomb.appspot.com",
+            messagingSenderId: "202849503814",
+            appId: "1:202849503814:web:67adfdc5d4f11ba31b5847",
+            measurementId: "G-10N6MXVTQ5"
+        };
 
-    let cart = [];
-    let userID = null;
+        // Ініціалізація Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(app);
 
-    // Генерация уникального ID пользователя при первой загрузке
-    function generateUserID() {
-      userID = 'user_' + Math.random().toString(36).substr(2, 9);
-      userIDElement.innerText = userID;
-      return userID;
-    }
+        let cart = [];
 
-    // Сохранение данных корзины в Firestore
-    function saveCartToFirestore() {
-      if (userID) {
-        db.collection("carts").doc(userID).set({
-          items: cart,
-        });
-      }
-    }
-
-    // Открытие корзины
-    function openCart() {
-      cartElement.classList.add("open");
-      displayCart();
-    }
-
-    // Закрытие корзины
-    function closeCart() {
-      cartElement.classList.remove("open");
-    }
-
-    // Добавление товара в корзину
-    addToCartBtn.addEventListener("click", function() {
-      const product = {
-        name: "Konfeta1",
-        price: 40,
-      };
-      cart.push(product);
-      saveCartToFirestore();
-      openCart();
-    });
-
-    // Отображение товаров в корзине
-    function displayCart() {
-      cartContainer.innerHTML = "";
-      let totalPrice = 0;
-
-      cart.forEach(item => {
-        const cartItem = document.createElement("div");
-        cartItem.classList.add("cart-item");
-        cartItem.innerHTML = `${item.name} - ${item.price} грн`;
-        cartContainer.appendChild(cartItem);
-        totalPrice += item.price;
-      });
-
-      totalPriceElement.innerText = `Загальна сума: ${totalPrice} грн`;
-    }
-
-    // Обработка закрытия корзины
-    closeCartBtn.addEventListener("click", closeCart);
-
-    // Обработка кнопки "Купити"
-    checkoutBtn.addEventListener("click", function() {
-      window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSdXo5bqVltvFc3k9VoE6PBckYGovq2TPTxKQhIB7JCCyQiukg/viewform";
-    });
-
-    // Инициализация корзины и уникального ID при загрузке страницы
-    window.onload = function() {
-      if (!userID) {
-        generateUserID();
-      }
-      db.collection("carts").doc(userID).get().then((doc) => {
-        if (doc.exists) {
-          cart = doc.data().items || [];
-          displayCart();
+        function addToCart(productName, price) {
+            const product = { name: productName, price: price };
+            cart.push(product);
+            updateCart();
         }
-      });
-    };
-  </script>
 
+        function updateCart() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            cartItemsContainer.innerHTML = '';
+
+            let total = 0;
+            cart.forEach(product => {
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('cart-item');
+                cartItem.innerHTML = `
+                    <h4>${product.name}</h4>
+                    <button class="buy-button" onclick="buyProduct()">Купити</button>
+                `;
+                cartItemsContainer.appendChild(cartItem);
+                total += product.price;
+            });
+
+            document.getElementById('total-price').innerHTML = `Загальна вартість: ${total} грн`;
+        }
+
+        // Функція для покупки
+        function buyProduct() {
+            addOrderToFirebase(cart);
+            cart = [];  // Очистити кошик після оформлення
+            updateCart();  // Оновити відображення кошика
+        }
+
+        // Збереження замовлення у Firebase
+        function addOrderToFirebase(cart) {
+            const orderId = db.collection('orders').doc().id; // Генеруємо унікальний ID для замовлення
+            const orderData = {
+                orderId: orderId,
+                items: cart.map(item => ({
+                    name: item.name,
+                    price: item.price
+                })),
+                totalPrice: cart.reduce((sum, item) => sum + item.price, 0),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            // Збереження даних замовлення у Firebase
+            db.collection('orders').doc(orderId).set(orderData)
+                .then(() => {
+                    console.log("Order saved with ID: " + orderId);
+                    alert('Ваше замовлення було успішно оформлене! ID замовлення: ' + orderId);
+                    displayOrders(); // Оновлюємо відображення замовлень
+                })
+                .catch((error) => {
+                    console.error("Error adding document: ", error);
+                });
+        }
+
+        // Виведення замовлень на сторінку
+        function displayOrders() {
+            const ordersContainer = document.getElementById('orders-container');
+            db.collection('orders').get()
+                .then(snapshot => {
+                    ordersContainer.innerHTML = '';
+                    snapshot.forEach(doc => {
+                        const order = doc.data();
+                        const orderElement = document.createElement('div');
+                        orderElement.classList.add('order-item');
+                        orderElement.innerHTML = `
+                            <h4>Замовлення ID: ${order.orderId}</h4>
+                            <p>Товари:</p>
+                            <ul>
+                                ${order.items.map(item => `<li>${item.name} - ${item.price} грн</li>`).join('')}
+                            </ul>
+                            <p>Загальна вартість: ${order.totalPrice} грн</p>
+                        `;
+                        ordersContainer.appendChild(orderElement);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error getting orders: ", error);
+                });
+        }
+
+        function toggleCart() {
+            const cartContainer = document.getElementById('cart-container');
+            cartContainer.style.display = cartContainer.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function showTab(tabName) {
+            const allTabs = document.querySelectorAll('.tab-content');
+            allTabs.forEach(tab => tab.classList.remove('active'));
+
+            const activeTab = document.getElementById(tabName);
+            activeTab.classList.add('active');
+        }
+    </script>
 </body>
 </html>
